@@ -5,11 +5,11 @@ class PlayerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Player.objects.create(**validated_data)
 
-    def update_likes(self, player, likes):
-        player.update_likes(likes)
+    def update_like(self, player, like):
+        player.update_like(like)
 
-    def update_dislikes(self, player, dislikes):
-        player.update_dislikes(dislikes)
+    def update_dislike(self, player, dislike):
+        player.update_dislikes(dislike)
 
     def update_points(self, player):
         player.increment_points()

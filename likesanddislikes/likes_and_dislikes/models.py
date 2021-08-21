@@ -11,11 +11,11 @@ class Player(models.Model):
     lobby = models.ForeignKey('Lobby', on_delete=models.CASCADE, null=True)
     points = models.PositiveIntegerField(default=0)
 
-    def update_likes(self, likes):
-        Card.objects.get(player=self).update(likes=likes)
+    def update_like(self, like):
+        Card.objects.get(player=self).update(like=like)
 
-    def update_dislikes(self, dislikes):
-        Card.objects.get(player=self).update(dislikes=dislikes)
+    def update_dislike(self, dislike):
+        Card.objects.get(player=self).update(dislike=dislike)
 
     def increment_points(self):
         self.points = points + 1
@@ -28,7 +28,7 @@ class Player(models.Model):
 
 class Card(models.Model):
     player = models.OneToOneField('Player', on_delete=models.CASCADE)
-    likes = models.CharField(max_length=64, blank=True, null=True)
+    like = models.CharField(max_length=64, blank=True, null=True)
     dislike = models.CharField(max_length=64, blank=True, null=True)
 
 class Guess(models.Model):

@@ -30,7 +30,7 @@ def join_lobby(request):
     return Response(data={"player_id": player.id, "players_in_lobby": lobby.list_all_players()}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
-def set_likes_dislikes(request):
+def set_like_dislike(request):
     card_data = {**request.data, "player": request.data["player_id"]}
     if Card.objects.filter(player__pk=card_data["player"]).exists():
         return Response("Error: A card for this player already exists", status=status.HTTP_422_UNPROCESSABLE_ENTITY)
