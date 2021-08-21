@@ -2,21 +2,28 @@ import MyForm from './components/MyForm';
 import WaitingRoom from './components/WaitingRoom';
 import SelectChoices from './components/SelectChoices';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  useHistory
 } from "react-router-dom";
+import React from "react";
 
 function App() {
+  const history = useHistory();
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={MyForm} />
-        <Route path="/:roomId/waiting" component={WaitingRoom} />
-        <Route path="/:roomId/selectChoices" component={SelectChoices} />
-      </Switch>
-    </Router>
+			<Switch>
+				<Route exact path="/" component={MyForm} />
+				<Route
+					path="/:roomId/waiting"
+					component={WaitingRoom}
+					history={history}
+				/>
+				<Route
+					path="/:roomId/selectChoices"
+					component={SelectChoices}
+					history={history}
+				/>
+			</Switch>
   );
 }
 

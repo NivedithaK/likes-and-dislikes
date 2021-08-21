@@ -9,10 +9,13 @@ import {
 	Text
 } from "@chakra-ui/react";
 import React, { useState } from 'react';
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const url = "";
 
 export default function MyForm(props) {
+	const history = useHistory();
 	const [roomCode, setRoomCode] = useState("");
 	const [name, setName] = useState("");
 	const [roomError, setRoomError] = useState("");
@@ -39,20 +42,26 @@ export default function MyForm(props) {
 			return;
 		}
 
-		const res = await fetch(`${url}/join-room`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ name })
-		})
-		if (res.status === 200) {
-			let data = await res.json();
-			const path = "/" + roomCode + "/waiting";
-			props.history.push(path, { players_in_lobby: data.players_in_lobby });
-		}
-		const path = "/" + roomCode + "/waiting";
-		props.history.push(path);
+		const headers = {
+			"Content-Type": "application/json",
+		};
+		axios
+			.post(
+				`http://127.0.0.1:8000/likes-and-dislikes/join-lobby/`,
+				{ nickname: name, lobby_id: roomCode},
+				{ headers }
+			)
+			.then((result) => {
+				if (result.status === 201) {
+					let data = result.data;
+					const path = "/" + roomCode + "/waiting";
+					console.log(path);
+					history.push(path, {
+						players_in_lobby: data.players_in_lobby,
+						lobby_id: roomCode,
+					});
+				}
+			});
 	}
 
 	const createNewRoom = async function (event) {
@@ -63,21 +72,30 @@ export default function MyForm(props) {
 		} else {
 			setNameError("");
 		}
+		const headers = {
+			'Content-Type': 'application/json'
+		};
 
-		const res = await fetch(`${url}/create-lobby-and-host`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ nickname: name })
-		})
-		if (res.status === 200) {
-			let data = await res.json();
-			let lobbyId = data.lobby_code;
-			const path = "/" + lobbyId + "/waiting";
-			props.history.push(path.anchor, { players_in_lobby: data.players_in_lobby });
-		}
+		axios
+			.post(
+				`http://127.0.0.1:8000/likes-and-dislikes/create-lobby-and-host/`,
+				{ nickname: name },
+				{ headers }
+			)
+			.then((result) => {
+				if (result.status === 201) {
+					let data = result.data;
+					let lobbyId = data.lobby_code;
+					const path = "/" + lobbyId + "/waiting";
+					console.log(path)
+					history.push(path, {
+						players_in_lobby: data.players_in_lobby,
+						lobby_id: lobbyId,
+					});
+				}
+			});
 	}
+
 
 	return (
 		<Stack maxWidth={500} margin="auto" marginTop={20} spacing={5}>

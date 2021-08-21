@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'likes_and_dislikes.apps.LikesAndDislikesConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,19 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+# Use this after deploying
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"^https://\w+\.domain\.com$",
+# ]
 
 ROOT_URLCONF = 'likesanddislikes.urls'
 
