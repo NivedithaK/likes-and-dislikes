@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('create-lobby-and-host/', views.create_lobby_and_host, name='create_lobby_and_host'),
+    path('join-lobby/', views.join_lobby, name='join_lobby'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

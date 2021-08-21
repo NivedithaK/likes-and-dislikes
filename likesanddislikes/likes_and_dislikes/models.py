@@ -3,6 +3,9 @@ from django.db import models
 class Lobby(models.Model):
     lobby_id = models.CharField(max_length=6, primary_key=True)
 
+    def list_all_players(self):
+        return Player.objects.filter(lobby__pk=self.lobby_id).values_list('nickname', flat=True)
+
 class Player(models.Model):
     nickname = models.CharField(max_length=32)
     lobby = models.ForeignKey('Lobby', on_delete=models.CASCADE, null=True)
