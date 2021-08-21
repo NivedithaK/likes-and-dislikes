@@ -115,3 +115,13 @@ def get_all_dislikes(request):
     cards = Card.objects.filter(player__lobby=lobby).all()
     players_dislikes = [{"player": x.player.nickname, "dislike": x.dislike} for x in cards]
     return Response(data={"dislikes": players_dislikes})
+
+@api_view(['GET'])
+def get_players_in_lobby(request):
+    try:
+        lobby = Lobby.objects.get(pk=request.data["lobby_id"])
+    except Lobby.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    player_serializer = PlayerSerializer(lobby.players.all(), many=True)
+
+    return Response(data={"players": player_serializer.data, "game_start": lobby.game_has_started})

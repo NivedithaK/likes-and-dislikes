@@ -12,6 +12,7 @@ urlpatterns = [
     path('scores/', views.get_lobby_scores, name='get_lobby_scores'),
     path('all-likes/', views.get_all_likes, name='get_all_likes'),
     path('all-dislikes/', views.get_all_dislikes, name='get_all_dislikes'),
+    path('players-in-lobby/', views.get_players_in_lobby, name='get_players_in_lobby'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
