@@ -11,8 +11,8 @@ class PlayerSerializer(serializers.ModelSerializer):
     def update_dislike(self, player, dislike):
         player.update_dislikes(dislike)
 
-    def update_points(self, player):
-        player.increment_points()
+    def update_score(self, player):
+        player.increment_score()
     
     class Meta:
         model = Player

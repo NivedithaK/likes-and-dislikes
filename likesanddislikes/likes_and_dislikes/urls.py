@@ -9,6 +9,7 @@ urlpatterns = [
     path('game-list/', views.get_game_list, name='get_game_list'),
     path('enter-guess/', views.enter_guess, name='enter_guess'),
     path('guess-history/', views.get_guess_history, name='get_guess_history'),
+    path('scores/', views.get_lobby_scores, name='get_lobby_scores'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

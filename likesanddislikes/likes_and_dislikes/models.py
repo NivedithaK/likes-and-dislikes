@@ -8,8 +8,8 @@ class Lobby(models.Model):
 
 class Player(models.Model):
     nickname = models.CharField(max_length=32)
-    lobby = models.ForeignKey('Lobby', on_delete=models.CASCADE, null=True)
-    points = models.PositiveIntegerField(default=0)
+    lobby = models.ForeignKey('Lobby', related_name="players", on_delete=models.CASCADE, null=True)
+    score = models.PositiveIntegerField(default=0)
 
     def update_like(self, like):
         Card.objects.get(player=self).update(like=like)
@@ -17,24 +17,24 @@ class Player(models.Model):
     def update_dislike(self, dislike):
         Card.objects.get(player=self).update(dislike=dislike)
 
-    def increment_points(self):
-        self.points = points + 1
+    def increment_score(self):
+        self.score = score + 1
     
     def assign_lobby(self, lobby):
         self.lobby = lobby
 
-    def get_all_guesses(self):
-        return Guess.objects.filter(player=self).all()#.values_list('card__like', 'card__dislike', 'guessed_player__nickname')
-
     class Meta:
-        ordering = ['points', 'nickname']
+        ordering = ['score', 'nickname']
 
 class Card(models.Model):
     player = models.OneToOneField('Player', related_name="card", on_delete=models.CASCADE)
     like = models.CharField(max_length=64, blank=True, null=True)
     dislike = models.CharField(max_length=64, blank=True, null=True)
 
+    class Meta:
+        ordering = ['pk']
+
 class Guess(models.Model):
-    player = models.ForeignKey('Player', related_name="guess", on_delete=models.CASCADE)
+    player = models.ForeignKey('Player', related_name="guesses", on_delete=models.CASCADE)
     card = models.OneToOneField('Card', on_delete=models.CASCADE)
     guessed_player = models.ForeignKey('Player', related_name="guessed_as", on_delete=models.CASCADE)

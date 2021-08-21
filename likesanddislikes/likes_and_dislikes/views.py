@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from likes_and_dislikes.models import Card, Guess, Lobby, Player
-from likes_and_dislikes.serializers import CardSerializer, GuessSerializer, PlayerSerializer
+from likes_and_dislikes.serializers import CardSerializer, GuessSerializer, LobbySerializer, PlayerSerializer
 from likes_and_dislikes.utils import generate_lobby_id, is_valid_lobby
 
 @api_view(['POST'])
@@ -81,6 +81,15 @@ def get_guess_history(request):
     except Player.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    guess_history = [{"like": x.card.like, "dislike": x.card.dislike, "guess": x.player.nickname} for x in player.get_all_guesses()]
-    print(guess_history)
+    guess_history = [{"like": x.card.like, "dislike": x.card.dislike, "guess": x.player.nickname} for x in player.guesses.all()]
     return Response(data={"guess_history": guess_history})
+
+@api_view(['GET'])
+def get_lobby_scores(request):
+    try:
+        lobby = Lobby.objects.get(pk=request.data["lobby_id"])
+    except Lobby.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    player_scores = [{"player": x.pk, "score": x.score} for x in lobby.players.all()]
+    return Response(data={"scoreboard": player_scores})
