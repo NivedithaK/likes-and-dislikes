@@ -27,7 +27,7 @@ class Player(models.Model):
         ordering = ['points', 'nickname']
 
 class Card(models.Model):
-    player = models.OneToOneField('Player', on_delete=models.CASCADE)
+    player = models.OneToOneField('Player', related_name="card", on_delete=models.CASCADE)
     like = models.CharField(max_length=64, blank=True, null=True)
     dislike = models.CharField(max_length=64, blank=True, null=True)
 

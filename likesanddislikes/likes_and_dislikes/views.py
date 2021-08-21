@@ -16,7 +16,7 @@ def create_lobby_and_host(request):
         player = player_serializer.create(player_serializer.validated_data)
     else:
         lobby.delete()
-    return Response(data={"lobby_code": lobby_id, "player_id": player.id, "players_in_lobby": []}, status=status.HTTP_201_CREATED)
+    return Response(data={"lobby_code": lobby_id, "player_id": player.id, "players_in_lobby": lobby.list_all_players()}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 def join_lobby(request):
@@ -37,8 +37,7 @@ def set_like_dislike(request):
     card_serializer = CardSerializer(data=card_data)
     if card_serializer.is_valid():
         card_serializer.save()
-    print(Card.objects.all())
-    return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
+    return Response(card_serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
 def get_game_list(request):
@@ -51,11 +50,26 @@ def get_game_list(request):
     serializer = CardSerializer(cards, many=True)
     return Response(serializer.data)
 
-# @api_view(['POST'])
-# def enter_guess(request):
-#     card_data = {**request.data, "player": request.data["player_id"]}
-#     card_serializer = CardSerializer(data=card_data)
-#     if card_serializer.is_valid():
-#         card_serializer.save()
-#     print(Card.objects.all())
-#     return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
+@api_view(['POST'])
+def enter_guess(request):
+    try:
+        player = Player.objects.get(pk=request.data["player_id"])
+    except Player.DoesNotExist:
+        return Response("Player (guesser) not found", status=status.HTTP_404_NOT_FOUND)
+    try:
+        card = Card.objects.get(pk=request.data["card_id"])
+    except Card.DoesNotExist:
+        return Response("Card not found", status=status.HTTP_404_NOT_FOUND)
+    try:
+        guessed_player = Player.objects.get(pk=request.data["guess"])
+    except Player.DoesNotExist:
+        return Response("Guessed player not found", status=status.HTTP_404_NOT_FOUND)
+
+    guess_data = {"guessed_player": guessed_player.pk, "player": player.pk, "card": card.pk}
+
+    guess_serializer = GuessSerializer(data=guess_data)
+    if guess_serializer.is_valid():
+        guess_serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
+    else:
+        return Response(guess_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
