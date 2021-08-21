@@ -7,10 +7,12 @@ import {
 	Button,
 	Stack,
 	Text,
+	Box,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import bgimg from "../assets/background.png";
 
 const url = "";
 
@@ -104,36 +106,53 @@ export default function MyForm(props) {
 	};
 
 	return (
-		<Stack maxWidth={500} margin="auto" marginTop={20} spacing={5}>
-			<Text fontSize="4xl">Likes and Dislikes</Text>
+		<Box
+			height="100vh"
+			width="100vw"
+			backgroundSize="100vw 100vh"
+			bgImage={bgimg}
+			class="centered"
+		>
+			<Stack
+				backgroundColor="white"
+				p={20}
+				maxWidth={500}
+				margin="auto"
+				spacing={5}
+				borderRadius="30"
+			>
+				<Text fontSize="4xl">Likes and Dislikes</Text>
 
-			<form onSubmit={handleSubmit}>
-				<FormControl isInvalid={roomError}>
-					<FormLabel htmlFor="room-code">Room code</FormLabel>
-					<Input
-						type="text"
-						id="roomCode"
-						onChange={({ target }) =>
-							setRoomCode(target.value.trim())
-						}
-					/>
-					<FormErrorMessage>{roomError}</FormErrorMessage>
-				</FormControl>
-				<FormControl isInvalid={nameError}>
-					<FormLabel htmlFor="name">Name</FormLabel>
-					<Input
-						type="text"
-						id="name"
-						onChange={({ target }) => setName(target.value)}
-					/>
-					<FormErrorMessage>{nameError}</FormErrorMessage>
+				<form onSubmit={handleSubmit}>
+					<FormControl isInvalid={roomError}>
+						<FormLabel htmlFor="room-code">Room code</FormLabel>
+						<Input
+							type="text"
+							id="roomCode"
+							onChange={({ target }) =>
+								setRoomCode(target.value.trim())
+							}
+						/>
+						<FormErrorMessage>{roomError}</FormErrorMessage>
+					</FormControl>
+					<FormControl isInvalid={nameError}>
+						<FormLabel htmlFor="name">Name</FormLabel>
+						<Input
+							type="text"
+							id="name"
+							onChange={({ target }) => setName(target.value)}
+						/>
+						<FormErrorMessage>{nameError}</FormErrorMessage>
 
-					<Stack spacing={3} marginTop={10} align="center">
-						<Button type="submit">Enter</Button>
-						<Button onClick={createNewRoom}>Make a new room</Button>
-					</Stack>
-				</FormControl>
-			</form>
-		</Stack>
+						<Stack spacing={3} marginTop={10} align="center">
+							<Button type="submit">Enter</Button>
+							<Button onClick={createNewRoom}>
+								Make a new room
+							</Button>
+						</Stack>
+					</FormControl>
+				</form>
+			</Stack>
+		</Box>
 	);
 }
