@@ -91,5 +91,27 @@ def get_lobby_scores(request):
     except Lobby.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    player_scores = [{"player": x.pk, "score": x.score} for x in lobby.players.all()]
+    player_scores = [{"player": x.nickname, "score": x.score} for x in lobby.players.all()]
     return Response(data={"scoreboard": player_scores})
+
+@api_view(['GET'])
+def get_all_likes(request):
+    try:
+        lobby = Lobby.objects.get(pk=request.data["lobby_id"])
+    except Lobby.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    cards = Card.objects.filter(player__lobby=lobby).all()
+    players_likes = [{"player": x.player.nickname, "like": x.like} for x in cards]
+    return Response(data={"likes": players_likes})
+
+@api_view(['GET'])
+def get_all_dislikes(request):
+    try:
+        lobby = Lobby.objects.get(pk=request.data["lobby_id"])
+    except Lobby.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    cards = Card.objects.filter(player__lobby=lobby).all()
+    players_dislikes = [{"player": x.player.nickname, "dislike": x.dislike} for x in cards]
+    return Response(data={"dislikes": players_dislikes})
