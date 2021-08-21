@@ -14,6 +14,8 @@ def create_lobby_and_host(request):
     player_serializer = PlayerSerializer(data=player_data)
     if player_serializer.is_valid():
         player = player_serializer.create(player_serializer.validated_data)
+    else:
+        lobby.delete()
     return Response(data={"lobby_code": lobby_id, "player_id": player.id, "players_in_lobby": []}, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
@@ -30,11 +32,24 @@ def join_lobby(request):
 @api_view(['POST'])
 def set_likes_dislikes(request):
     card_data = {**request.data, "player": request.data["player_id"]}
+    if Card.objects.filter(player__pk=card_data["player"]).exists():
+        return Response("Error: A card for this player already exists", status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     card_serializer = CardSerializer(data=card_data)
     if card_serializer.is_valid():
         card_serializer.save()
     print(Card.objects.all())
     return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def get_game_list(request):
+    try:
+        lobby = Lobby.objects.get(lobby_id=request.data["lobby_id"])
+    except Lobby.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    cards = Card.objects.filter(player__lobby=lobby)
+    serializer = CardSerializer(cards, many=True)
+    return Response(serializer.data)
 
 # @api_view(['POST'])
 # def enter_guess(request):
