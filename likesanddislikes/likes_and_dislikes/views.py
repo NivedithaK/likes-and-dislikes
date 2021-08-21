@@ -36,11 +36,11 @@ def set_likes_dislikes(request):
     print(Card.objects.all())
     return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
 
-@api_view(['POST'])
-def enter_guess(request):
-    card_data = {**request.data, "player": request.data["player_id"]}
-    card_serializer = CardSerializer(data=card_data)
-    if card_serializer.is_valid():
-        card_serializer.save()
-    print(Card.objects.all())
-    return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
+# @api_view(['POST'])
+# def enter_guess(request):
+#     card_data = {**request.data, "player": request.data["player_id"]}
+#     card_serializer = CardSerializer(data=card_data)
+#     if card_serializer.is_valid():
+#         card_serializer.save()
+#     print(Card.objects.all())
+#     return Response(data={"IT WORKED"}, status=status.HTTP_201_CREATED)
