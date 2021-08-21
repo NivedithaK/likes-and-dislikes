@@ -23,6 +23,9 @@ class Player(models.Model):
     def assign_lobby(self, lobby):
         self.lobby = lobby
 
+    def get_all_guesses(self):
+        return Guess.objects.filter(player=self).all()#.values_list('card__like', 'card__dislike', 'guessed_player__nickname')
+
     class Meta:
         ordering = ['points', 'nickname']
 

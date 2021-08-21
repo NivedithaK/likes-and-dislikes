@@ -73,3 +73,14 @@ def enter_guess(request):
         return Response(status=status.HTTP_201_CREATED)
     else:
         return Response(guess_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_guess_history(request):
+    try:
+        player = Player.objects.get(pk=request.data["player_id"])
+    except Player.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    guess_history = [{"like": x.card.like, "dislike": x.card.dislike, "guess": x.player.nickname} for x in player.get_all_guesses()]
+    print(guess_history)
+    return Response(data={"guess_history": guess_history})
